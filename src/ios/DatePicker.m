@@ -49,6 +49,10 @@
   } else {
       self.datePickerContainer.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.4];
   }
+  //Force wheel datepicker
+  if (@available(iOS 13.4, *)) {
+    self.datePicker.preferredDatePickerStyle = 1;
+  }
   
   [self updateDatePicker:options];
   [self updateCancelButton:options];
