@@ -9,6 +9,7 @@
                 <outlet property="cancelButton" destination="xq4-6B-F5W" id="BDR-WE-Trb"/>
                 <outlet property="datePicker" destination="SUg-U1-bKY" id="aaa-Vr-qUb"/>
                 <outlet property="datePickerComponentsContainer" destination="b2J-jW-BgT" id="jYk-bM-1Mz"/>
+                <outlet property="datePickerComponentsContainerHeightConstraint" destination="9uR-69-zFL" id="height-constraint"/>
                 <outlet property="datePickerComponentsContainerVSpace" destination="Pz2-m8-ZCU" id="HyH-ku-Omg"/>
                 <outlet property="datePickerContainer" destination="1" id="tz5-zN-epC"/>
                 <outlet property="doneButton" destination="FEs-Wn-Ur2" id="UaP-7S-x5K"/>
@@ -20,13 +21,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b2J-jW-BgT">
-                    <rect key="frame" x="0.0" y="354" width="320" height="216"/>
+                    <rect key="frame" x="0.0" y="280" width="320" height="288"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CHZ-tf-She">
-                            <rect key="frame" x="0.0" y="54" width="320" height="180"/>
+                            <rect key="frame" x="0.0" y="54" width="320" height="216"/>
                             <subviews>
                                 <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="SUg-U1-bKY">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="162"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="216"/>
                                     <date key="date" timeIntervalSinceReferenceDate="408285701.96363503">
                                         <!--2013-12-09 12:41:41 +0000-->
                                     </date>
@@ -68,7 +69,7 @@
                     <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstItem="FEs-Wn-Ur2" firstAttribute="height" secondItem="xq4-6B-F5W" secondAttribute="height" id="0XS-oZ-CNe"/>
-                        <constraint firstAttribute="height" constant="216" id="9uR-69-zFL"/>
+                        <constraint firstAttribute="height" constant="288" id="9uR-69-zFL"/>
                         <constraint firstItem="FEs-Wn-Ur2" firstAttribute="width" secondItem="xq4-6B-F5W" secondAttribute="width" id="Gl0-Ut-zPZ"/>
                         <constraint firstItem="CHZ-tf-She" firstAttribute="leading" secondItem="b2J-jW-BgT" secondAttribute="leading" id="NUO-OT-Yul"/>
                         <constraint firstAttribute="trailing" secondItem="CHZ-tf-She" secondAttribute="trailing" id="Pds-Eg-BO8"/>

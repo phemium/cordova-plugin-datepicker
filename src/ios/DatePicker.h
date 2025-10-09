@@ -16,6 +16,9 @@
     
 }
 
+@property (nonatomic, strong) IBOutlet NSLayoutConstraint *datePickerComponentsContainerHeightConstraint;
+
 - (void)show:(CDVInvokedUrlCommand*)command;
+- (void)adjustDatePickerSizeForInlineMode:(NSMutableDictionary *)options;
 
 @end
