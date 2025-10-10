@@ -57,6 +57,11 @@
   // Ajustar el tamaño del datePicker para modo inline
   [self adjustDatePickerSizeForInlineMode:options];
   
+  // Forzar actualización de la apariencia para iOS 18+
+  // Configurar colores fijos: fondo blanco, modo claro forzado
+  self.datePicker.backgroundColor = [UIColor whiteColor];
+  self.datePicker.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+  
   UIInterfaceOrientation deviceOrientation = [UIApplication sharedApplication].statusBarOrientation;
   
   CGFloat width;
@@ -79,6 +84,11 @@
   
   [self.webView.superview addSubview: self.datePickerContainer];
   [self.datePickerContainer layoutIfNeeded];
+  
+  // Configurar observador para cambios en el modo oscuro
+  // Configurar colores fijos: fondo blanco, modo claro forzado
+  self.datePicker.backgroundColor = [UIColor whiteColor];
+  self.datePicker.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
 
   CGRect frame = self.datePickerComponentsContainer.frame;
   self.datePickerComponentsContainer.frame = CGRectOffset(frame,
@@ -205,22 +215,17 @@
 - (UIDatePicker *)createDatePicker:(NSMutableDictionary *)options frame:(CGRect)frame {
   UIDatePicker *datePicker = [[UIDatePicker alloc] initWithFrame:frame];
   
-  // Configurar estilo preferido para iOS 14+
+  // Configurar siempre estilo wheeler
   if (@available(iOS 14.0, *)) {
-    NSString *preferredStyle = [options objectForKey:@"preferredDatePickerStyle"];
-    NSLog(@"Estilo preferido en createDatePicker: %@", preferredStyle);
-    
-    if ([preferredStyle isEqualToString:@"inline"]) {
-      datePicker.preferredDatePickerStyle = UIDatePickerStyleInline;
-    } else if ([preferredStyle isEqualToString:@"compact"]) {
-      datePicker.preferredDatePickerStyle = UIDatePickerStyleCompact;
-    } else if ([preferredStyle isEqualToString:@"wheels"]) {
-      datePicker.preferredDatePickerStyle = UIDatePickerStyleWheels;
-    } else {
-      // Por defecto usar inline para mostrar calendario
-      datePicker.preferredDatePickerStyle = UIDatePickerStyleInline;
-    }
+    datePicker.preferredDatePickerStyle = UIDatePickerStyleWheels;
   }
+  
+  // Configurar colores fijos: fondo blanco, modo claro forzado
+  datePicker.backgroundColor = [UIColor whiteColor];
+  datePicker.overrideUserInterfaceStyle = UIUserInterfaceStyleLight; // Forzar modo claro
+  
+  // Configurar colores específicos para el wheeler
+  [self configureWheelerColors:datePicker];
   
   return datePicker;
 }
@@ -274,22 +279,17 @@
     self.datePicker.datePickerMode = UIDatePickerModeDateAndTime;
   }
   
-  // Configurar el estilo preferido del date picker
+  // Configurar siempre estilo wheeler
   if (@available(iOS 14.0, *)) {
-    NSLog(@"Estilo preferido: %@", preferredStyle);
-    
-    if ([preferredStyle isEqualToString:@"inline"]) {
-      self.datePicker.preferredDatePickerStyle = UIDatePickerStyleInline;
-    } else if ([preferredStyle isEqualToString:@"compact"]) {
-      self.datePicker.preferredDatePickerStyle = UIDatePickerStyleCompact;
-    } else if ([preferredStyle isEqualToString:@"wheels"]) {
-      self.datePicker.preferredDatePickerStyle = UIDatePickerStyleWheels;
-    } else {
-      NSLog(@"Estilo no reconocido, usando UIDatePickerStyleInline por defecto");
-      // Por defecto usar inline para mostrar calendario
-      self.datePicker.preferredDatePickerStyle = UIDatePickerStyleInline;
-    }
+    self.datePicker.preferredDatePickerStyle = UIDatePickerStyleWheels;
   }
+  
+  // Configurar colores fijos: fondo blanco, modo claro forzado
+  self.datePicker.backgroundColor = [UIColor whiteColor];
+  self.datePicker.overrideUserInterfaceStyle = UIUserInterfaceStyleLight; // Forzar modo claro
+  
+  // Configurar colores específicos para el wheeler
+  [self configureWheelerColors:self.datePicker];
 
   if (minuteInterval) {
     self.datePicker.minuteInterval = minuteInterval;
@@ -350,91 +350,58 @@
 }
 
 - (void)adjustDatePickerSizeForInlineMode:(NSMutableDictionary *)options {
-  if (@available(iOS 14.0, *)) {
-    NSString *preferredStyle = [options objectForKey:@"preferredDatePickerStyle"];
-    NSLog(@"Estilo preferido recibido: %@", preferredStyle);
-    
-    // Obtener la altura de los botones (toolbar)
-    CGFloat toolbarHeight = 54; // Altura de los botones CANCELAR y HECHO
-    
-    if ([preferredStyle isEqualToString:@"inline"]) {
-      // Para modo inline: ajustar dinámicamente el tamaño
-      [self.datePicker setNeedsLayout];
-      [self.datePicker layoutIfNeeded];
-      
-      // Obtener el tamaño intrínseco del datePicker
-      CGSize intrinsicSize = [self.datePicker sizeThatFits:CGSizeMake(self.datePicker.frame.size.width, CGFLOAT_MAX)];
-      
-      // Ajustar el tamaño del datePicker
-      CGRect datePickerFrame = self.datePicker.frame;
-      datePickerFrame.size.height = intrinsicSize.height;
-      self.datePicker.frame = datePickerFrame;
-      
-      // Ajustar la restricción de altura del contenedor principal
-      if (self.datePickerComponentsContainerHeightConstraint) {
-        self.datePickerComponentsContainerHeightConstraint.constant = intrinsicSize.height + toolbarHeight + 18; // datePicker + botones + padding
-      } else {
-        // Fallback: ajustar el frame directamente
-        CGRect containerFrame = self.datePickerComponentsContainer.frame;
-        containerFrame.size.height = intrinsicSize.height + toolbarHeight + 18;
-        self.datePickerComponentsContainer.frame = containerFrame;
-      }
-      
-    } else if ([preferredStyle isEqualToString:@"wheels"]) {
-      CGFloat wheelsHeight = 216; // Altura estándar para wheels
-      
-      // Ajustar el tamaño del datePicker
-      CGRect datePickerFrame = self.datePicker.frame;
-      datePickerFrame.size.height = wheelsHeight;
-      self.datePicker.frame = datePickerFrame;
-      
-      // Ajustar la restricción de altura del contenedor principal
-      if (self.datePickerComponentsContainerHeightConstraint) {
-        self.datePickerComponentsContainerHeightConstraint.constant = wheelsHeight + toolbarHeight + 18;
-      } else {
-        // Fallback: ajustar el frame directamente
-        CGRect containerFrame = self.datePickerComponentsContainer.frame;
-        containerFrame.size.height = wheelsHeight + toolbarHeight + 18;
-        self.datePickerComponentsContainer.frame = containerFrame;
-      }
-      
-    } else {
-      CGFloat compactHeight = 50; // Altura mínima para compact
-      
-      // Ajustar el tamaño del datePicker
-      CGRect datePickerFrame = self.datePicker.frame;
-      datePickerFrame.size.height = compactHeight;
-      self.datePicker.frame = datePickerFrame;
-      
-      // Ajustar la restricción de altura del contenedor principal
-      if (self.datePickerComponentsContainerHeightConstraint) {
-        self.datePickerComponentsContainerHeightConstraint.constant = compactHeight + toolbarHeight + 18;
-      } else {
-        // Fallback: ajustar el frame directamente
-        CGRect containerFrame = self.datePickerComponentsContainer.frame;
-        containerFrame.size.height = compactHeight + toolbarHeight + 18;
-        self.datePickerComponentsContainer.frame = containerFrame;
-      }
-    }
+  // Altura fija para wheeler
+  CGFloat wheelsHeight = 216;
+  CGFloat toolbarHeight = 54;
+  
+  // Ajustar el tamaño del datePicker
+  CGRect datePickerFrame = self.datePicker.frame;
+  datePickerFrame.size.height = wheelsHeight;
+  self.datePicker.frame = datePickerFrame;
+  
+  // Ajustar la restricción de altura del contenedor principal
+  if (self.datePickerComponentsContainerHeightConstraint) {
+    self.datePickerComponentsContainerHeightConstraint.constant = wheelsHeight + toolbarHeight + 18;
   } else {
-    CGFloat wheelsHeight = 216;
-    CGFloat toolbarHeight = 54;
-    
-    // Ajustar el tamaño del datePicker
-    CGRect datePickerFrame = self.datePicker.frame;
-    datePickerFrame.size.height = wheelsHeight;
-    self.datePicker.frame = datePickerFrame;
-    
-    // Ajustar la restricción de altura del contenedor principal
-    if (self.datePickerComponentsContainerHeightConstraint) {
-      self.datePickerComponentsContainerHeightConstraint.constant = wheelsHeight + toolbarHeight + 18;
-    } else {
-      // Fallback: ajustar el frame directamente
-      CGRect containerFrame = self.datePickerComponentsContainer.frame;
-      containerFrame.size.height = wheelsHeight + toolbarHeight + 18;
-      self.datePickerComponentsContainer.frame = containerFrame;
-    }
+    // Fallback: ajustar el frame directamente
+    CGRect containerFrame = self.datePickerComponentsContainer.frame;
+    containerFrame.size.height = wheelsHeight + toolbarHeight + 18;
+    self.datePickerComponentsContainer.frame = containerFrame;
   }
+}
+
+- (void)configureWheelerColors:(UIDatePicker *)datePicker {
+  // Configurar colores específicos para el wheeler
+  // Fondo blanco siempre, independiente del modo oscuro/claro
+  datePicker.backgroundColor = [UIColor whiteColor];
+  datePicker.overrideUserInterfaceStyle = UIUserInterfaceStyleLight;
+  
+  // Configurar tintColor para elementos seleccionados (negro)
+  if (@available(iOS 15.0, *)) {
+    datePicker.tintColor = [UIColor blackColor];
+  } else {
+    datePicker.tintColor = [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:1.0];
+  }
+  
+  // Intentar configurar colores de texto usando KVC
+  @try {
+    // Texto normal gris
+    [datePicker setValue:[UIColor grayColor] forKey:@"textColor"];
+    
+    // Forzar actualización de la apariencia
+    [datePicker setNeedsDisplay];
+    [datePicker setNeedsLayout];
+    
+  } @catch (NSException *exception) {
+    // Si falla el KVC, no es crítico
+    NSLog(@"No se pudieron configurar todos los colores del wheeler: %@", exception.reason);
+  }
+  
+  // Aplicar configuración después de un pequeño delay
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    [datePicker setNeedsDisplay];
+    [datePicker setNeedsLayout];
+  });
 }
 
 @end
