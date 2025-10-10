@@ -20,5 +20,6 @@
 
 - (void)show:(CDVInvokedUrlCommand*)command;
 - (void)adjustDatePickerSizeForInlineMode:(NSMutableDictionary *)options;
+- (void)configureWheelerColors:(UIDatePicker *)datePicker;
 
 @end
